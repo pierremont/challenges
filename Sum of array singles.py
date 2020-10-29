@@ -5,20 +5,29 @@ In this Kata, you will be given an array of numbers in which two numbers occur o
 For example, repeats([4,5,7,5,4,8]) = 15 because only the numbers 7 and 8 occur once, and their sum is 15.
 '''
 
-#will need to optimize the code, since it's rejected by codewars (even though it works)
-def functie(y):
-    # print (y)
+#initially i used 2 loops, but that was optimized, since it was rejected by codewars (even though it worked)
+
+def functie(arr):
+    temp_arr = []
     sum = 0
-    for i in y:
-        c = 0
-        for z in y:
-            if i == z:
-                c = c + 1
-        if c == 1:
-            sum = sum + i
+    for i in arr:
+        if i in temp_arr: #create a temporary list from which you subtract the item if it's already there
+            sum -= i
+        else:
+            sum += i
+            temp_arr.append(i)
     return sum
-    # print (sum)
 
+arr = (4, 5, 7, 5, 4, 8)
+print(functie(arr))
 
-x = (4, 5, 7, 5, 4, 8)
-print(functie(x))
+'''other solutions from codewars:
+===============
+def repeats(arr):
+    return sum([x for x in arr if arr.count(x) == 1])
+===============
+from collections import Counter
+
+def repeats(arr):
+    return sum(k for k, v in Counter(arr).items() if v == 1)
+'''
