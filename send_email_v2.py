@@ -13,7 +13,7 @@ def send_email(mesaj):
     SMSBody=mesaj
     SUBJECT = "Alerta docker web2sms"
     #TO = "name.surname@orange.com";"name.surname@gmail.com"
-    TO = "name.surname@orange.com"
+    TO = "name.surname@domain.com"
     HOSTUSER = getpass.getuser()
     HOSTNAME = socket.gethostname()
     FROM = HOSTUSER + "@" + HOSTNAME
