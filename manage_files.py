@@ -1,9 +1,13 @@
 ###! /bin/python
+#@author: petrus.munteanu, 2020
+#due to lack of time, the script is not at all optimized. Repetitions and small mistakes are bound to exist here, but feel free to improve the script as you find fit
 
 import os, fnmatch
 import datetime
 
 search_dir = "c:\\workspace\\python\manage_files"
+#search_dir = "c:\\users\\public\\workspace\\pycharm\\test_files"
+#search_dir = "/home/ctm_user/devops/mongo/dumps/prd/test/test_files"
 dest_dir = 'c:\\workspace\\python\\manage_files\\move_folder'
 
 # how many months the script will process
@@ -29,25 +33,27 @@ month_list = find_months()
 
 '''  6 files of every month except the last 2 months '''
 backup_candidates = []
-for z in month_list:
-    count = 0
+def search_files (iter_mon):
     iter_backup_candidates = []
-    for y in range(1, 29):  # we search each day for a complete backup
-        if len(iter_backup_candidates) != 6:
-            for file in os.listdir(search_dir):
-                if fnmatch.fnmatch(file, str(z) + "_" + str(y).zfill(2) + '*'):
+    print("looking for files for the " + iter_mon + " month")
+    for y in range(1, 29):  #we search each day
+        for file in os.listdir(search_dir):
+            if len(iter_backup_candidates) != 6:
+                if fnmatch.fnmatch(file, str(iter_mon) + "_" + str(y).zfill(2) + "*"):
                     iter_backup_candidates.append(file)
-        else:
-            backup_candidates.append(iter_backup_candidates)
-            iter_backup_candidates = []
+            elif not iter_backup_candidates:
+                print("nothing")
+            else:
+                backup_candidates.append(iter_backup_candidates)
+                return (backup_candidates)
+        iter_backup_candidates = []
 
+for iter_mon in month_list:
+    search_files(iter_mon)
 
 for k in backup_candidates:
-    print("the following files are ellible for moving to the permanent backup folder")
-    print("\n".join(k))
-# break
-
-
+    print('the following files are elligible for movin to the permanent backup')
+    print ("\n".join(k))
 ''' move the candidate files in the permanent backup folder '''
 
 ''' delete the older files except the current month '''
