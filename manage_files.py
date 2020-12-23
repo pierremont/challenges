@@ -10,31 +10,27 @@ dest_dir = "c:\\workspace\\python\\manage_files\\move_folder"
 # search_dir = "c:\\users\\public\\workspace\\pycharm\\test_files\\"
 # search_dir = "/home/ctm_user/devops/mongo/dumps/prd/test/test_files"
 
-
 # how many months the script will process
 # The script will ignore the last 2 months - excluding # the current one
 # so if you put in 6 months, the script will process 4 months -> from 6 months ago until 2 months ago:
-num_months = 6
+months_search_period = 6
+months_keep_period = 2  #how many months of backups to keep in the temporary directory - where the backup is originally stored
 
-''' extract the last month date '''
-# date = (datetime.datetime.today() - datetime.timedelta(30)).strftime("%d-%b-%Y") #a month ago'
-# date = first_day - datetime.timedelta(days=1)   #last date of the previous month
-# print(date.strftime("%Y_%m"))
 
+''' extract the months which will be processed '''
 def find_months():
     month_list = []
     today = datetime.date.today()
     beautiful_day = today.replace(day=10)  # the tenth day of the current month
-    for i in range(num_months, 2, -1):
+    for i in range(months_search_period, months_keep_period, -1):
         date = beautiful_day - datetime.timedelta(days=30 * i)
         month_list.append(str(date.strftime("%Y_%m")))
     return month_list
 month_list = find_months()
 
-##########################################
-'''  6 files of every month except the last 2 months '''
-backup_candidates = []
 
+''' search for 6 files of every month except the last 2 months. 6 files reprezent a good backup '''
+backup_candidates = []
 # looking for files
 def search_files(iter_mon):
     iter_backup_candidates = []
@@ -48,36 +44,50 @@ def search_files(iter_mon):
                 print("nothing")
             else:
                 for item in iter_backup_candidates:
-                    #print ("item to be added to the list of files: " + item)
                     backup_candidates.append(item)
                 return (backup_candidates)
         iter_backup_candidates = []
 for iter_mon in month_list:
     search_files(iter_mon)
 
-print('the following files are elligible for moving to the permanent backup')
+print('the following files are elligible for copying to the permanent backup')
 for k in backup_candidates:
     print(k)
 print
-print
 
-#creating a list with the full path
+#creating a list with the files full path
 absolute_path_files = []
 for k in backup_candidates:
-    print(search_dir + str(k))
     absolute_path_files.append(search_dir + str(k))
 
 
-
-''' move the candidate files in the permanent backup folder '''
+''' copy the candidate files in the permanent backup folder '''
 if backup_candidates:
-    user_input = raw_input("copy them to the permanent backup location? Yes or Y/No or N")
+    user_input = raw_input("copy them to the permanent backup location? Y/N")
     if (user_input.lower() == "yes" or user_input.lower() == "y"):
-        for z in absolute_path_files:
-            copy(z, dest_dir)
+        for file in absolute_path_files:
+            copy(file, dest_dir)
         print("backup files have been copied")
+        print
     else:
         print("see you later")
+        quit()
 
 
-''' delete the older files except the current month '''
+''' delete the older files except the last months '''
+user_input = raw_input("delete older files? Y/N")
+if (user_input.lower() == "yes" or user_input.lower() == "y"):
+    for i in month_list:
+        for rootDir, subdirs, filenames in os.walk(search_dir):
+            # Find the files that matches the given patterm
+            for filename in fnmatch.filter(filenames, i + '*.gz'):
+                try:
+                    print("I\'m gonna delete " + filename)
+                    os.remove(os.path.join(rootDir, filename))
+                except OSError:
+                    print("Error while deleting file")
+else:
+    print("see you later")
+    quit()
+
+print("job finished")
