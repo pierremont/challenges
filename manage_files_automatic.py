@@ -1,4 +1,4 @@
-#! /bin/python
+git ad#! /bin/python
 # @author: petrus.munteanu, 2020
 # due to lack of time, the script is not at all optimized. Repetitions and small mistakes are bound to be found, but feel free to improve the script as you find fit
 
@@ -11,7 +11,7 @@ dest_dir = "c:\\workspace\\python\\manage_files\\move_folder"
 # dest_dir = "c:\\users\\public\\workspace\\pycharm\\test_files\\move_folder\\"
 
 # search_dir = "/home/ctm_user/devops/mongo/dumps/prd/test/test_files/"
-# dest_dir = "c:\\users\\public\\workspace\\pycharm\\test_files\\move_folder/"
+# dest_dir = "/home/ctm_user/devops/mongo/dumps/prd/test/test_files_move_folder/"
 
 # how many months the script will process
 # The script will ignore the last 2 months - excluding # the current one
@@ -66,31 +66,25 @@ for k in backup_candidates:
 
 ''' copy the candidate files in the permanent backup folder '''
 if backup_candidates:
-    user_input = raw_input("copy them to the permanent backup location? Y/N: ")
-    if (user_input.lower() == "yes" or user_input.lower() == "y"):
-        for file in absolute_path_files:
-            copy(file, dest_dir)
-        print("backup files have been copied")
-        print
-    else:
-        print("see you later")
-        quit()
+    for file in absolute_path_files:
+        copy(file, dest_dir)
+    print("backup files have been copied")
+    print
+else:
+    print("no candidates found, see you later")
+    quit()
 
 
 ''' delete the older files except the last months '''
-user_input = raw_input("delete older files? Y/N: ")
-if (user_input.lower() == "yes" or user_input.lower() == "y"):
-    for i in month_list:
-        for rootDir, subdirs, filenames in os.walk(search_dir):
-            # Find the files that matches the given patterm
-            for filename in fnmatch.filter(filenames, i + '*.gz'):
-                try:
-                    print("I\'m gonna delete " + filename)
-                    os.remove(os.path.join(rootDir, filename))
-                except OSError:
-                    print("Error while deleting file")
-else:
-    print("see you later")
-    quit()
+
+for i in month_list:
+    for rootDir, subdirs, filenames in os.walk(search_dir):
+        # Find the files that matches the given patterm
+        for filename in fnmatch.filter(filenames, i + '*.gz'):
+            try:
+                print("I\'m gonna delete " + filename)
+                os.remove(os.path.join(rootDir, filename))
+            except OSError:
+                print("Error while deleting file")
 
 print("job finished")
