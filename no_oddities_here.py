@@ -14,3 +14,9 @@ def no_odds(values):
 
 my_array = [1, 3, 6, 2, 8, 9]
 no_odds(my_array)
+
+'''
+other solutions:
+def no_odds(values):
+    return [i for i in values if i % 2 == 0]
+'''
