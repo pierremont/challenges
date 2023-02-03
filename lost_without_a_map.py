@@ -15,3 +15,9 @@ def maps(a):
 entry = maps([2, 4, 323])
 print entry
 
+'''
+def maps(a):
+    return a * 2
+
+x = map(maps, (5, 6))
+print(list(x))'''
