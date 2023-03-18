@@ -8,7 +8,17 @@ Examples:
 def is_divisible(n, x, y):
     return n % x == 0 and n % y == 0
 
-print(is_divisible(6, 2, 4))
+# print(is_divisible(6, 2, 4))
+
+# loop run:
+numbers = [(6, 2, 4), (10, 2, 5)]
+message = "the result of dividing is {}"
+
+for a in numbers:
+    final_result = (is_divisible(a[0], a[1], a[2]))
+    #print (message.format(final_result))
+    print(f"the result of dividing is {final_result}")
+
 
 '''other solutions:
 def is_divisible(n, x, y):
